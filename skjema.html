@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="no">
+
+<head>
+    <meta charset="UTF-8">
+    <title>StupidChat</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<style>
+   html{
+background-color: #033860;
+
+   }
+   
+    body{
+        margin: 30px auto;
+        max-width: 600px;
+        background-color: #004385;
+        padding: 10px;
+        color: honeydew;
+
+    }
+    #txtMeldinger{
+        margin-top: 16px;
+    }
+</style>
+</head>
+
+<body>
+    <h1>StupidChat</h1>
+    <form id="skjema">
+        <input type="text" id="inpAvsender" required placeholder="Hvem er du?">
+        <input type="text" id="inpMening" required placeholder="Hva sier du?">
+        <button type="submit" class="button">OK</button>
+    </form>
+    <article id="txtMeldinger"></article>
+
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase.js"> </script>
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyCcaquZf4ZZDfhYUu2AK8OwGxHhOWA1zfM",
+            authDomain: "stupidchat-51726.firebaseapp.com",
+            databaseURL: "https://stupidchat-51726.firebaseio.com",
+            projectId: "stupidchat-51726",
+            storageBucket: "stupidchat-51726.appspot.com",
+            messagingSenderId: "875585505127",
+            appId: "1:875585505127:web:d7a93bdbb8f6e59b7bd1c2",
+            measurementId: "G-8JV40SZ0VT"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+    </script>
+    <script>
+        let database = firebase.database();
+        let meldinger = database.ref("Meldinger");
+        let skjema = document.getElementById("skjema");
+        let inpAvsender = document.getElementById("inpAvsender");
+        let inpMening = document.getElementById("inpMening");
+        let txtMeldinger = document.getElementById("txtMeldinger");
+        function visMeldinger(snapshot) {
+            let melding = snapshot.val();
+            let meldingTekst = `<p> 
+            <b>${melding.avsender}:</b>
+             <i>${melding.tekst}</i>
+              </p>`;
+
+            txtMeldinger.innerHTML = txtMeldinger.innerHTML + meldingTekst;
+        }
+        function regNyMelding(evt) {
+            evt.preventDefault();
+            var nyMelding = {
+                avsender: inpAvsender.value,
+                tekst: inpMening.value
+            };
+            meldinger.push(nyMelding);
+            inpMening.value = "";
+        }
+        meldinger.on("child_added", visMeldinger);
+        skjema.onsubmit = regNyMelding;
+    </script>
+
+</body>
+
+</html>
